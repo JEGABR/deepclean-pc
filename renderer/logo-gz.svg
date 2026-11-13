@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <!-- Background Shield Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="55%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#090d16" />
+    </linearGradient>
+
+    <!-- Border Glow Gradient -->
+    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="50%" stop-color="#8b5cf6" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+
+    <!-- G Letter Gradient (Electric Cyan-Blue) -->
+    <linearGradient id="gGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#60a5fa" />
+      <stop offset="100%" stop-color="#2563eb" />
+    </linearGradient>
+
+    <!-- Z Letter Gradient (Emerald Cyber Bolt) -->
+    <linearGradient id="zGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399" />
+      <stop offset="50%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#3b82f6" />
+    </linearGradient>
+
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Squircle App Container -->
+  <rect x="12" y="12" width="232" height="232" rx="54" fill="url(#bgGrad)" stroke="url(#borderGrad)" stroke-width="6" />
+
+  <!-- Subtle Inner Tech Ring -->
+  <circle cx="128" cy="128" r="92" fill="none" stroke="#334155" stroke-width="1.5" stroke-dasharray="6 6" opacity="0.55" />
+
+  <!-- Geometric Monogram "G" (Left/Outer Arc) -->
+  <path d="M 136 64
+           H 84
+           C 64 64, 50 78, 50 98
+           V 158
+           C 50 178, 64 192, 84 192
+           H 126
+           C 142 192, 152 182, 152 166
+           V 132
+           H 106"
+        fill="none"
+        stroke="url(#gGrad)"
+        stroke-width="22"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        filter="url(#glow)" />
+
+  <!-- Geometric Monogram "Z" (Right/Interlocking Bolt) -->
+  <path d="M 122 86
+           H 198
+           L 126 170
+           H 202"
+        fill="none"
+        stroke="url(#zGrad)"
+        stroke-width="22"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        filter="url(#glow)" />
+
+  <!-- Clean Sparkle Accent (Top Right) -->
+  <path d="M 200 44 L 204 54 L 214 58 L 204 62 L 200 72 L 196 62 L 186 58 L 196 54 Z" fill="#34d399" />
+</svg>

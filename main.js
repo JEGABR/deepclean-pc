@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, shell, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, shell, dialog, nativeImage } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const fsp = require('fs/promises');
@@ -11,12 +11,14 @@ let activeScanAbortController = null;
 let cachedAdminStatus = null;
 
 function createWindow() {
+  const iconPath = path.join(__dirname, 'renderer', 'logo-gz.png');
   mainWindow = new BrowserWindow({
     width: 1280,
     height: 840,
     minWidth: 980,
     minHeight: 660,
     backgroundColor: '#0b0f19',
+    icon: fs.existsSync(iconPath) ? iconPath : path.join(__dirname, 'renderer', 'logo-gz.svg'),
     titleBarStyle: 'hidden',
     titleBarOverlay: {
       color: '#0b0f19',
