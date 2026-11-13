@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DeepClean PC — Desinstalador Pro, Caçador de Órfãos & Limpeza Profunda</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Custom Window Titlebar -->
+  <div class="titlebar">
+    <div class="titlebar-brand">
+      <span class="brand-dot"></span>
+      <span class="brand-name">DeepClean PC</span>
+      <span class="brand-tag">v2.5 Design Edition</span>
+      <span id="admin-badge" class="admin-pill">Verificando permissões...</span>
+    </div>
+    <div class="titlebar-controls">
+      <button id="theme-toggle-btn" class="theme-switch-btn" title="Alternar Tema Escuro / Claro">
+        <svg id="theme-icon-sun" class="hidden" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <svg id="theme-icon-moon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        <span id="theme-label">Tema Escuro</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="app-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <!-- Sidebar Drive Telemetry Container -->
+      <div class="nav-group">
+        <div id="drives-telemetry-list" class="drives-list">
+          <div class="disk-telemetry">
+            <div class="disk-header">
+              <span>Disco Local (C:)</span>
+              <strong id="disk-free-label">-- GB livres</strong>
+            </div>
+            <div class="disk-bar-bg">
+              <div id="disk-bar-fill" class="disk-bar-fill" style="width: 0%;"></div>
+            </div>
+            <small id="disk-total-label" class="disk-sub">Calculando espaço...</small>
+          </div>
+        </div>
+
+        <div class="nav-label">MÓDULOS DE LIMPEZA</div>
+
+        <button class="nav-btn active" data-tab="uninstaller-tab">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+            <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+          </svg>
+          <div class="nav-text">
+            <div class="nav-title-row">
+              <span>Desinstalador Pro</span>
+              <span id="badge-count-installed" class="nav-counter">0</span>
+            </div>
+            <small>Apps + Scanner de Resíduos</small>
+          </div>
+        </button>
+
+        <button class="nav-btn" data-tab="ghost-tab">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 10h.01M15 10h.01M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z"/>
+          </svg>
+          <div class="nav-text">
+            <div class="nav-title-row">
+              <span>Programas Fantasmas</span>
+              <span id="badge-count-ghost" class="nav-counter">0</span>
+            </div>
+            <small>Fora do Painel & Pastas Órfãs</small>
+          </div>
+        </button>
+
+        <button class="nav-btn" data-tab="unused-tab">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+          <div class="nav-text">
+            <div class="nav-title-row">
+              <span>Arquivos Esquecidos</span>
+              <span id="badge-count-unused" class="nav-counter">0</span>
+            </div>
+            <small>Sem uso há meses & Cache Dev</small>
+          </div>
+        </button>
+
+        <button class="nav-btn" data-tab="junk-tab">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+          </svg>
+          <div class="nav-text">
+            <div class="nav-title-row">
+              <span>Limpeza Rápida</span>
+              <span id="badge-count-junk" class="nav-counter">0</span>
+            </div>
+            <small>Temp, Prefetch, NPM/PIP Cache</small>
+          </div>
+        </button>
+      </div>
+
+      <div class="sidebar-stats">
+        <div class="stat-card">
+          <span class="stat-label">Marcado para Limpeza</span>
+          <strong class="stat-value" id="selected-size-display">0 B</strong>
+          <small id="selected-count-display">0 itens selecionados</small>
+        </div>
+        <div class="stat-card freed-card">
+          <span class="stat-label">Espaço Recuperado na Sessão</span>
+          <strong class="stat-value text-emerald" id="freed-size-display">0 B</strong>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- TAB 0: UNINSTALLER PRO -->
+      <section id="uninstaller-tab" class="tab-panel active">
+        <header class="panel-header">
+          <div>
+            <h1>Desinstalador Completo de Programas</h1>
+            <p>Lista programas Win32, jogos (Steam/Epic) e apps da Microsoft Store. Ao desinstalar, vasculha automaticamente <code>AppData</code>, <code>ProgramData</code> e <code>Program Files</code> para eliminar sobras.</p>
+          </div>
+          <div class="header-actions">
+            <label class="checkbox-pill" title="Incluir aplicativos da Microsoft Store na listagem">
+              <input type="checkbox" id="toggle-store-apps" />
+              <span>Incluir Apps da Store</span>
+            </label>
+            <button id="btn-refresh-installed" class="btn-primary">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+              </svg>
+              Atualizar Lista
+            </button>
+          </div>
+        </header>
+
+        <div class="toolbar">
+          <div class="search-box">
+            <input type="text" id="installed-search" placeholder="Buscar programa instalado por nome ou fabricante..." />
+          </div>
+          <select id="installed-filter" class="select-input">
+            <option value="all">Todos os Programas</option>
+            <option value="broken">Com Desinstalador Ausente / Fantasma</option>
+            <option value="user">Instalados no Usuário (HKCU)</option>
+            <option value="system">Instalados no Sistema (HKLM)</option>
+            <option value="store">Apps da Microsoft Store</option>
+          </select>
+          <select id="installed-sort" class="select-input">
+            <option value="size_desc">Maior Tamanho</option>
+            <option value="name_asc">Nome (A-Z)</option>
+            <option value="publisher_asc">Fabricante</option>
+          </select>
+        </div>
+
+        <div id="installed-progress" class="progress-bar-wrap hidden">
+          <div class="spinner"></div>
+          <span id="installed-progress-text">Lendo programas instalados...</span>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Programa & Caminho</th>
+                <th>Fabricante</th>
+                <th>Versão</th>
+                <th>Origem / Status</th>
+                <th>Tamanho Real/Est.</th>
+                <th width="250">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="installed-tbody">
+              <tr class="empty-row">
+                <td colspan="6">
+                  <div class="empty-state">Carregando lista de programas instalados...</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- TAB 1: GHOST PROGRAMS -->
+      <section id="ghost-tab" class="tab-panel">
+        <header class="panel-header">
+          <div>
+            <h1>Caçador de Programas Fantasmas & Pastas Órfãs</h1>
+            <p>Encontra programas portáteis que não aparecem no painel do Windows e pastas órfãs deixadas em <code>AppData</code>, <code>ProgramData</code> e <code>Program Files</code> por programas antigos.</p>
+          </div>
+          <div class="header-actions">
+            <button id="btn-cancel-ghost" class="btn-secondary hidden">Parar</button>
+            <button id="btn-scan-ghost" class="btn-primary">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              Escanear Sistema
+            </button>
+          </div>
+        </header>
+
+        <div class="toolbar">
+          <div class="search-box">
+            <input type="text" id="ghost-search" placeholder="Filtrar por nome da pasta ou caminho..." />
+          </div>
+          <select id="ghost-filter-type" class="select-input">
+            <option value="all">Todos os Tipos</option>
+            <option value="hidden_program">Apenas Programas com .EXE (Portáteis/Ocultos)</option>
+            <option value="orphan">Apenas Pastas Órfãs (Restos em AppData/ProgramData)</option>
+          </select>
+          <select id="ghost-sort" class="select-input">
+            <option value="size_desc">Maior Tamanho</option>
+            <option value="days_desc">Mais Antigo (Sem Uso)</option>
+            <option value="name_asc">Nome (A-Z)</option>
+          </select>
+        </div>
+
+        <div id="ghost-progress" class="progress-bar-wrap hidden">
+          <div class="spinner"></div>
+          <span id="ghost-progress-text">Iniciando varredura...</span>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th width="40"><input type="checkbox" id="ghost-select-all" /></th>
+                <th>Programa / Pasta Encontrada</th>
+                <th>Diagnóstico</th>
+                <th>Local</th>
+                <th>Inatividade</th>
+                <th>Tamanho</th>
+                <th width="160">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="ghost-tbody">
+              <tr class="empty-row">
+                <td colspan="7">
+                  <div class="empty-state">
+                    Clique em <strong>"Escanear Sistema"</strong> para localizar programas ocultos fora do painel do Windows e pastas órfãs.
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- TAB 2: UNUSED OLD FILES -->
+      <section id="unused-tab" class="tab-panel">
+        <header class="panel-header">
+          <div>
+            <h1>Rastreador de Arquivos Antigos & Caches de Projetos</h1>
+            <p>Localiza instaladores esquecidos, vídeos pesados, arquivos compactados e pastas pesadas de desenvolvimento (<code>node_modules</code>, <code>.venv</code>, <code>target</code>) sem uso há meses.</p>
+          </div>
+          <div class="header-actions">
+            <button id="btn-cancel-unused" class="btn-secondary hidden">Parar</button>
+            <button id="btn-scan-unused" class="btn-primary">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              Buscar Arquivos Antigos
+            </button>
+          </div>
+        </header>
+
+        <div class="filters-bar">
+          <div class="filter-item">
+            <label>Sem uso há pelo menos:</label>
+            <select id="unused-days" class="select-input">
+              <option value="30">30 dias (1 mês)</option>
+              <option value="90" selected>90 dias (3 meses)</option>
+              <option value="180">180 dias (6 meses)</option>
+              <option value="365">365 dias (1 ano)</option>
+            </select>
+          </div>
+
+          <div class="filter-item">
+            <label>Tamanho mínimo:</label>
+            <select id="unused-min-size" class="select-input">
+              <option value="5">5 MB</option>
+              <option value="10" selected>10 MB</option>
+              <option value="50">50 MB</option>
+              <option value="100">100 MB</option>
+              <option value="500">500 MB</option>
+            </select>
+          </div>
+
+          <div class="filter-item">
+            <label>Critério de Data:</label>
+            <select id="unused-metric" class="select-input">
+              <option value="mtime" selected>Última Modificação</option>
+              <option value="atime">Último Acesso</option>
+            </select>
+          </div>
+
+          <div class="filter-item folder-picker">
+            <label>Pasta Alvo:</label>
+            <div class="folder-input-group">
+              <span id="custom-folder-label" class="folder-badge">Pastas do Usuário (Downloads, Docs, Desktop...)</span>
+              <button id="btn-pick-folder" class="btn-secondary btn-sm">Escolher Pasta</button>
+              <button id="btn-reset-folder" class="btn-ghost btn-sm hidden">Resetar</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <div class="search-box">
+            <input type="text" id="unused-search" placeholder="Filtrar por nome ou extensão (.iso, .zip, .mp4, node_modules)..." />
+          </div>
+          <select id="unused-ext-filter" class="select-input">
+            <option value="all">Todas as Categorias</option>
+            <option value="installers">Instaladores & Imagens (.exe, .msi, .iso)</option>
+            <option value="archives">Compactados (.zip, .rar, .7z, .tar)</option>
+            <option value="media">Vídeos & Áudio (.mp4, .mkv, .mov, .avi)</option>
+            <option value="dev">Pastas de Projetos (node_modules, .venv, target)</option>
+          </select>
+        </div>
+
+        <div id="unused-progress" class="progress-bar-wrap hidden">
+          <div class="spinner"></div>
+          <span id="unused-progress-text">Escaneando pastas...</span>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th width="40"><input type="checkbox" id="unused-select-all" /></th>
+                <th>Arquivo / Pasta</th>
+                <th>Localização</th>
+                <th>Tempo Inativo</th>
+                <th>Última Data</th>
+                <th>Tamanho</th>
+                <th width="95">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="unused-tbody">
+              <tr class="empty-row">
+                <td colspan="7">
+                  <div class="empty-state">
+                    Configure os filtros acima e clique em <strong>"Buscar Arquivos Antigos"</strong>.
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- TAB 3: QUICK SYSTEM JUNK (CCLEANER STYLE) -->
+      <section id="junk-tab" class="tab-panel">
+        <header class="panel-header">
+          <div>
+            <h1>Limpeza Rápida de Cache & Temporários (Estilo CCleaner)</h1>
+            <p>Analisa pastas seguras de lixo acumulado do sistema: <code>%TEMP%</code>, <code>Windows\Temp</code>, <code>Prefetch</code>, relatórios de erro, dumps de travamento e caches globais de pacotes (NPM / PIP / DirectX).</p>
+          </div>
+          <button id="btn-scan-junk" class="btn-primary">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+            </svg>
+            Analisar Caches do Sistema
+          </button>
+        </header>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th width="40"><input type="checkbox" id="junk-select-all" /></th>
+                <th>Categoria de Cache / Temporário</th>
+                <th>Descrição</th>
+                <th>Arquivos</th>
+                <th>Tamanho Acumulado</th>
+                <th width="95">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="junk-tbody">
+              <tr class="empty-row">
+                <td colspan="6">
+                  <div class="empty-state">
+                    Clique em <strong>"Analisar Caches do Sistema"</strong> para calcular o espaço ocupado por arquivos temporários.
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Bottom Action Bar -->
+      <footer class="action-footer">
+        <div class="footer-info">
+          <span id="footer-status-text">Nenhum item marcado para exclusão.</span>
+        </div>
+        <div class="footer-buttons">
+          <button id="btn-clear-selection" class="btn-secondary" disabled>Desmarcar Tudo</button>
+          <button id="btn-delete-selected" class="btn-danger" disabled>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+            </svg>
+            Limpar Selecionados...
+          </button>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div id="confirm-modal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Confirmar Limpeza de Itens</h2>
+        <span class="badge-danger">Confirmação de Segurança</span>
+      </div>
+      <p class="modal-desc">
+        Você selecionou <strong id="modal-count">0</strong> item(ns), totalizando <strong id="modal-size">0 MB</strong>. Revise a lista abaixo e escolha como deseja remover:
+      </p>
+      <div id="modal-list" class="modal-file-list"></div>
+      <div class="modal-actions">
+        <button id="modal-cancel" class="btn-secondary">Cancelar</button>
+        <button id="modal-trash" class="btn-primary" title="Envia para a Lixeira do Windows (pode restaurar se precisar)">Mover para a Lixeira</button>
+        <button id="modal-confirm" class="btn-danger" title="Apaga direto do disco sem passar pela Lixeira">Apagar Permanentemente</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Post-Uninstall Leftovers Modal -->
+  <div id="leftovers-modal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="leftovers-title">Limpeza Pós-Desinstalação</h2>
+        <span class="badge badge-purple">Scanner de Resíduos</span>
+      </div>
+      <p id="leftovers-desc" class="modal-desc"></p>
+      <div id="leftovers-list" class="modal-file-list"></div>
+      <div class="modal-actions">
+        <button id="leftovers-cancel" class="btn-secondary">Manter Pastas</button>
+        <button id="leftovers-confirm" class="btn-danger">Apagar Resíduos Selecionados</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Drive Migration Modal (C: <-> E: without breaking programs) -->
+  <div id="migrate-modal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Mover para Outro Disco (Sem Quebrar nada)</h2>
+        <span class="badge badge-emerald">Junção NTFS / Robocopy</span>
+      </div>
+      <p class="modal-desc">
+        Transfira <strong id="migrate-item-name">Item</strong> (<strong id="migrate-item-size">0 MB</strong>) entre unidades de disco (ex: <code>C:</code> para <code>E:</code> ou vice-versa).
+      </p>
+
+      <div class="migrate-form">
+        <div class="filter-item" style="margin-bottom: 12px;">
+          <label>Caminho Atual (Origem):</label>
+          <div id="migrate-source-path" class="folder-badge" style="max-width: 100%;">C:\...</div>
+        </div>
+
+        <div class="filter-item" style="margin-bottom: 12px;">
+          <label>Escolha a Pasta / Disco de Destino (ex: E:\ProgramasMovidos ou C:\...):</label>
+          <div class="folder-input-group">
+            <div id="migrate-dest-QuickDrives" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+            <button id="btn-pick-migrate-dest" class="btn-secondary btn-sm">Escolher Pasta...</button>
+          </div>
+          <div id="migrate-dest-path" class="folder-badge" style="max-width: 100%; margin-top: 6px;">Nenhuma pasta selecionada</div>
+        </div>
+
+        <div class="filter-item" id="migrate-mode-group" style="margin-bottom: 14px;">
+          <label>Modo de Transferência:</label>
+          <select id="migrate-mode-select" class="select-input" style="width: 100%;">
+            <option value="junction" selected>Mover + Criar Junção Transparente (mklink /J) — Ideal para Programas e Jogos (Não quebra atalhos nem Registro!)</option>
+            <option value="direct">Mover Direto (Apenas transferir os arquivos sem deixar atalho no caminho antigo)</option>
+          </select>
+        </div>
+
+        <div id="migrate-progress-box" class="progress-bar-wrap hidden">
+          <div class="spinner"></div>
+          <span id="migrate-progress-text">Copiando arquivos com verificação...</span>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button id="migrate-cancel" class="btn-secondary">Cancelar</button>
+        <button id="migrate-confirm" class="btn-primary">Iniciar Transferência Segura</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
